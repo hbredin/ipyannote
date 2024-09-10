@@ -1,0 +1,16 @@
+.ipyannote button {
+	background: #007bff;
+	border-radius: 10px;
+	border: 0;
+	color: white;
+	cursor: pointer;
+	font-family: "Roboto", sans-serif;
+	font-size: 2em;
+	margin: 10px;
+	padding: 10px 20px;
+	transition: transform 0.25s ease-in-out;
+}
+
+.ipyannote button:hover {
+	transform: scale(1.05);
+}

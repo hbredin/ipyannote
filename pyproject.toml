@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ipyannote"
+version = "0.0.0"
+dependencies = [
+    "anywidget",
+    "numpy>=2.1.0",
+    "scipy>=1.14.1",
+]
+readme = "README.md"
+
+[project.optional-dependencies]
+dev = ["watchfiles", "jupyterlab"]
+
+# automatically add the dev feature to the default env (e.g., hatch shell)
+[tool.hatch.envs.default]
+features = ["dev"]
