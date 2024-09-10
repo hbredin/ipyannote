@@ -1,5 +1,12 @@
 .ipyannote button {
-	background: #007bff;
+	background: linear-gradient(
+		300deg,
+		#9933ff 33.26%,
+		#ff6666 46.51%,
+		#faca30 59.77%,
+		#00cd99 73.03%,
+		#00ccff 86.29%
+	);
 	border-radius: 10px;
 	border: 0;
 	color: white;

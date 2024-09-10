@@ -1,0 +1,16 @@
+{
+	"scripts": {
+		"dev": "vite",
+		"build": "vite build"
+	},
+	"devDependencies": {
+		"@anywidget/vite": "^0.2.0",
+		"@sveltejs/vite-plugin-svelte": "^4.0.0-next.6",
+		"esbuild": "^0.23.0",
+		"svelte": "^5.0.0-next.1",
+		"vite": "^5.4.1"
+	},
+	"dependencies": {
+		"wavesurfer": "^1.3.4"
+	}
+}
