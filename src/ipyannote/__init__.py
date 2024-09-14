@@ -37,6 +37,7 @@ class Widget(anywidget.AnyWidget):
     _css = CSS
 
     b64_audio = traitlets.Unicode().tag(sync=True)
+    zoom = traitlets.Integer(20).tag(sync=True) # pixels per second
     regions = traitlets.List().tag(sync=True)
 
     def __init__(self, audio: Optional[str] = None, **kwargs):

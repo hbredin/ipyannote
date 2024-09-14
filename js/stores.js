@@ -10,6 +10,9 @@ export function createValue(model, name_, value_) {
   return {
     set: (v) => {
       curVal.set(v);
+      if (Array.isArray(v)) {
+        model.set(name, [], {silent: true})
+      }
       model.set(name, v);
       model.save_changes();
     },
@@ -17,6 +20,9 @@ export function createValue(model, name_, value_) {
     update: (func) => {
       curVal.update((v) => {
         let out = func(v);
+        if (Array.isArray(out)) {
+          model.set(name, [], {silent: true})
+        }
         model.set(name, out);
         model.save_changes();
         return out;
