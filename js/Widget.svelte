@@ -6,6 +6,7 @@
 
     let { model } = $props()
 
+    // create stores from traits
     let b64_audio = createValue(model, 'b64_audio')
     let zoom = createValue(model, 'zoom')
     let regions = createValue(model, 'regions')

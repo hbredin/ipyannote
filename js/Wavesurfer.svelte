@@ -14,6 +14,7 @@
     let container
     let wavesurfer
     let ready = $state(false)
+
     const regions = RegionsPlugin.create()
     
     setContext('getWavesurfer', ()=>wavesurfer)
@@ -31,6 +32,8 @@
         ia[i] = byteString.charCodeAt(i);
         }
         const blob = new Blob([ab], { type: 'audio/x-wav' });
+        ready = false
+        regions.clearRegions()
         wavesurfer.loadBlob(blob);
     }
 
@@ -49,6 +52,7 @@
             barWidth: 2,
             scrollParent: true,
             height: 300,
+            dragToSeek: true,
             plugins: [
                 regions,
                 TimelinePlugin.create(),
@@ -57,14 +61,18 @@
         wavesurfer.on('play', ()=>{playing=true})
         wavesurfer.on('pause', ()=>{playing=false})
         wavesurfer.on('ready', ()=>ready=true)
+        wavesurfer.on('dragstart', (X)=>{console.log('dragstart', X)})
         regions.on('region-updated', updateRegion)
+
+        return () => {
+            wavesurfer.destroy()
+        }
     })
 
     $effect(()=>loadAudioBlob($b64_audio))
     $effect(()=>{if (ready) {
         wavesurfer.zoom($zoom)
     }})
-    $effect(()=>console.log(ready))
 
 </script>
 
