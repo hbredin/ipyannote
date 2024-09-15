@@ -34,7 +34,6 @@
         }
         const blob = new Blob([ab], { type: 'audio/x-wav' });
         ready = false
-        regions.clearRegions()
         wavesurfer.loadBlob(blob);
     }
 

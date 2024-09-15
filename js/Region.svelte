@@ -10,5 +10,9 @@
             id,
             // label? TODO
         })
+
+        return () => {
+            region.remove()
+        }
     })
 </script>
