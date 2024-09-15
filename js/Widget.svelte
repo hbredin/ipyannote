@@ -43,6 +43,7 @@
         bind:this={ws} 
         bind:playing {zoom}
         {updateRegion}
+        onclick={()=>wrapper.focus()}
     >
         {#each $regions as region, i (region.id)}
              <Region {...region}/>

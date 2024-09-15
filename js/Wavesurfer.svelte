@@ -9,6 +9,7 @@
         playing=$bindable(),
         zoom,
         updateRegion,
+        onclick,
         children
     } = $props()
     let container
@@ -55,13 +56,16 @@
             dragToSeek: true,
             plugins: [
                 regions,
-                TimelinePlugin.create(),
+                TimelinePlugin.create({
+                    insertPosition: 'beforebegin',
+                }),
             ]
         })
         wavesurfer.on('play', ()=>{playing=true})
         wavesurfer.on('pause', ()=>{playing=false})
         wavesurfer.on('ready', ()=>ready=true)
         wavesurfer.on('dragstart', (X)=>{console.log('dragstart', X)})
+        wavesurfer.on('click', onclick)
         regions.on('region-updated', updateRegion)
 
         return () => {
