@@ -41,6 +41,10 @@
         wavesurfer.playPause()
     }
 
+    export function skip(time) {
+        wavesurfer.skip(time)
+    }
+
     onMount(()=>{
         wavesurfer = WaveSurfer.create({
             container: container,

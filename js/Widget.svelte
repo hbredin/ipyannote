@@ -19,6 +19,10 @@
         if (event.code === 'Space') {
             event.preventDefault()
             ws.playPause()
+        } else if (event.code === 'ArrowLeft') {
+            ws.skip(event.altKey?-0.1:-1)
+        } else if (event.code === 'ArrowRight') {
+            ws.skip(event.altKey?0.1:1)
         }
     }
 
