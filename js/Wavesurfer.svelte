@@ -8,7 +8,6 @@
         b64_audio, 
         playing=$bindable(),
         zoom,
-        updateRegion,
         onclick,
         children
     } = $props()
@@ -69,7 +68,6 @@
         wavesurfer.on('ready', ()=>ready=true)
         wavesurfer.on('dragstart', (X)=>{console.log('dragstart', X)})
         wavesurfer.on('click', onclick)
-        regions.on('region-updated', updateRegion)
 
         return () => {
             wavesurfer.destroy()

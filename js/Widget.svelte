@@ -38,6 +38,7 @@
         $regions[index] = newRegion
     }
 
+
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -46,11 +47,10 @@
         {b64_audio} 
         bind:this={ws} 
         bind:playing {zoom}
-        {updateRegion}
         onclick={()=>wrapper.focus()}
     >
-        {#each $regions as region, i (region.id)}
-             <Region {...region}/>
+        {#each $regions as region, i}
+             <Region bind:start={region.start} bind:end={region.end} bind:content={region.content}/>
         {/each}
     </Wavesurfer>
 </div>
