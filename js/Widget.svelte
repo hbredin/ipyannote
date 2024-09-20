@@ -24,6 +24,11 @@
             ws.skip(event.altKey?-0.1:-1)
         } else if (event.code === 'ArrowRight') {
             ws.skip(event.altKey?0.1:1)
+        } else if (event.code === 'Delete') {
+            if ($selectedIndex !== -1) {
+                regions.update(r=>[...r.filter((_, i)=>i!==$selectedIndex).sort((a,b)=>a.start - b.start)])
+                $selectedIndex = Math.min($selectedIndex, $regions.length-1)
+            }
         }
     }
 
@@ -56,7 +61,7 @@
         onclick={()=>wrapper.focus()}
         {addRegion}
     >
-        {#each $regions as region, i}
+        {#each $regions as region, i (region)}
              <Region 
                 bind:start={region.start} 
                 bind:end={region.end} 
