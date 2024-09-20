@@ -1,28 +1,59 @@
 <script>
     import {onMount, getContext} from 'svelte'
-    let {start=$bindable(), end=$bindable(), content=$bindable()} = $props()
-    let thisRegion = null
+    let {
+        start=$bindable(), 
+        end=$bindable(), 
+        content=$bindable(), 
+        isSelected=true,
+        select
+    } = $props()
+
+    let region = $state()
+    let element = $state()
+
+    const regions = getContext('regions')
 
     function update() {
-        start = thisRegion.start
-        end = thisRegion.end
+        start = region.start
+        end = region.end
+        select()
     }
 
+    $effect(()=>{if (region) {
+        const el = region.element
+        const parts = new Set(el.getAttribute('part').split(' '))
+        if (isSelected) {
+            parts.add('region-selected')
+        } else {
+            parts.delete('region-selected')
+        }
+        el.setAttribute('part', [...parts].join(' '))
+    }})
+
     onMount(()=>{
-        const regions = getContext('regions')
-        thisRegion = regions.addRegion({
+        region = regions.addRegion({
             start,
             end,
             content,
         })
-        thisRegion.element.style.top = '30%'
-        thisRegion.element.style.height = '40%'
+        element = region.element
+        element.style.top = '30%'
+        element.style.height = '40%'
+        element.style.backgroundColor = 'rgb(255,215,0)'
+        element.style.opacity = '75%'
 
-        thisRegion.on('update-end', update)
+        region.on('update-end', update)
+        region.on('click', select)
 
         return () => {
-            thisRegion.unAll()
-            thisRegion.remove()
+            region.unAll()
+            region.remove()
         }
     })
 </script>
+
+<style>
+:global(::part(region-selected)) {
+    background-image: repeating-linear-gradient( 45deg, transparent, transparent 10px, #fff 10px, #ffffff 15px );
+}
+</style>

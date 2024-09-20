@@ -10,6 +10,7 @@
     let b64_audio = createValue(model, 'b64_audio')
     let zoom = createValue(model, 'zoom')
     let regions = createValue(model, 'regions')
+    let selectedIndex = createValue(model, 'selected_index', -1)
     let playing = $state(false)
 
     let wrapper // Wrapper div
@@ -39,7 +40,7 @@
             content: '?', // todo assign active label
         }
         // can't directly remove a newborn region for some reason
-        setTimeout(()=>region.remove(), 1)
+        setTimeout(()=>region.remove(), 10)
         regions.update(r=>[...r, createdRegion])
     }
 
@@ -56,7 +57,13 @@
         {addRegion}
     >
         {#each $regions as region, i}
-             <Region bind:start={region.start} bind:end={region.end} bind:content={region.content}/>
+             <Region 
+                bind:start={region.start} 
+                bind:end={region.end} 
+                bind:content={region.content}
+                isSelected={$selectedIndex===i}
+                select={()=>{$selectedIndex=i}}
+                />
         {/each}
     </Wavesurfer>
 </div>
