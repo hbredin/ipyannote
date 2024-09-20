@@ -9,7 +9,8 @@
         playing=$bindable(),
         zoom,
         onclick,
-        children
+        children,
+        addRegion,
     } = $props()
     let container
     let wavesurfer
@@ -55,7 +56,6 @@
             barWidth: 2,
             scrollParent: true,
             height: 300,
-            dragToSeek: true,
             plugins: [
                 regions,
                 TimelinePlugin.create({
@@ -69,7 +69,13 @@
         wavesurfer.on('dragstart', (X)=>{console.log('dragstart', X)})
         wavesurfer.on('click', onclick)
 
+        regions.enableDragSelection({
+            id: 'drag'
+        })
+        regions.on('region-created', addRegion)
+
         return () => {
+            regions.destroy()
             wavesurfer.destroy()
         }
     })

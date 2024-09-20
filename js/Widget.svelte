@@ -26,16 +26,21 @@
         }
     }
 
-    function updateRegion(region) {
-        const index = $regions.findIndex(x => x.id===region.id)
-        const newRegion = Object.assign(
-            {}, 
-            $regions[index], 
-            {
-                start: region.start, 
-                end: region.end
-            })
-        $regions[index] = newRegion
+    function addRegion(region) {
+        // check if this region was created by dragging on the waveform
+        // in that case its id will be "drag"
+        // and we'll remove it and create a new region by updating the store
+        if (region.id !== 'drag') {
+            return
+        }
+        const createdRegion = {
+            start: region.start,
+            end: region.end,
+            content: '?', // todo assign active label
+        }
+        // can't directly remove a newborn region for some reason
+        setTimeout(()=>region.remove(), 1)
+        regions.update(r=>[...r, createdRegion])
     }
 
 
@@ -48,6 +53,7 @@
         bind:this={ws} 
         bind:playing {zoom}
         onclick={()=>wrapper.focus()}
+        {addRegion}
     >
         {#each $regions as region, i}
              <Region bind:start={region.start} bind:end={region.end} bind:content={region.content}/>
