@@ -11,6 +11,7 @@
     let zoom = createValue(model, 'zoom')
     let regions = createValue(model, 'regions')
     let selectedIndex = createValue(model, 'selected_index', -1)
+    
     let playing = $state(false)
 
     let wrapper // Wrapper div
@@ -58,7 +59,7 @@
         {b64_audio} 
         bind:this={ws} 
         bind:playing {zoom}
-        onclick={()=>wrapper.focus()}
+        onclick={()=>{wrapper.focus(); $selectedIndex=-1}}
         {addRegion}
     >
         {#each $regions as region, i (region)}
@@ -68,6 +69,7 @@
                 bind:content={region.content}
                 isSelected={$selectedIndex===i}
                 select={()=>{$selectedIndex=i}}
+                focus={()=>wrapper.focus()}
                 />
         {/each}
     </Wavesurfer>

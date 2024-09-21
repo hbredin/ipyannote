@@ -5,7 +5,8 @@
         end=$bindable(), 
         content=$bindable(), 
         isSelected=true,
-        select
+        select,
+        focus,
     } = $props()
 
     let region = $state()
@@ -17,6 +18,16 @@
         start = region.start
         end = region.end
         select()
+    }
+
+    function handleClick(event) {
+        event.stopPropagation()
+        if (isSelected) {
+            // play on click?
+        } else {
+            select()
+        }
+        focus()
     }
 
     $effect(()=>{if (region) {
@@ -43,7 +54,7 @@
         element.style.opacity = '75%'
 
         region.on('update-end', update)
-        region.on('click', select)
+        region.on('click', handleClick)
 
         return () => {
             region.unAll()
