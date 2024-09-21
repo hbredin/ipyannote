@@ -15,7 +15,7 @@
     let playing = $state(false)
 
     let wrapper // Wrapper div
-    let ws // Wafesurfer component
+    let ws // Wavesurfer component
 
     function hotkeys(event) {
         if (event.code === 'Space') {
