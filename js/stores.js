@@ -103,5 +103,12 @@ export function createRegionsValue(model, name) {
       })
       return newIndex
     },
+    clear: () => {
+      const val = []
+      curVal.set(val)
+      model.set(name, [])
+      model.save_changes()
+      return val
+    }
   };
 }

@@ -59,6 +59,33 @@
         $selectedIndex = regions.addRegion(createdRegion)
     }
 
+    // make regions dodge each other when they overlap
+    let overlap = $derived.by(()=>{
+        const moments = [
+            ...$regions.map((r,i)=>{return {time: r.start, start: true, index: i}}),
+            ...$regions.map((r,i)=>{return {time: r.end, start: false, index: i}}),
+        ]
+        moments.sort((a,b)=>a.time - b.time)
+        const tracks = [...$regions.map(r=>-1)]
+        const activeTracks = new Set()
+        for (let {start, index} of moments) {
+            if (start) {
+                let mytrack = -1
+                for (let track=0; track<10; track++) {
+                    if (!activeTracks.has(track)) {
+                        mytrack=track
+                        break
+                    }
+                }
+                tracks[index] = mytrack
+                activeTracks.add(mytrack)
+            } else {
+                activeTracks.delete(tracks[index])
+            }
+        }
+        return tracks
+    })
+
 
 </script>
 
@@ -80,6 +107,7 @@
                 select={()=>{$selectedIndex=i}}
                 focus={()=>wrapper.focus()}
                 update={(region)=>$selectedIndex=regions.updateRegion(region, i)}
+                overlap={overlap[i]}
                 />
         {/each}
     </Wavesurfer>
@@ -94,6 +122,7 @@
         {/if}
     </button>
     <input bind:value={$zoom} type='range' min='1' max='200'>
+    <button onclick={regions.clear}>Clear regions</button>
 </div>
 
 

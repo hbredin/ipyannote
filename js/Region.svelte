@@ -7,7 +7,8 @@
         isSelected=true,
         select,
         focus,
-        update
+        update,
+        overlap
     } = $props()
 
     let region = $state()
@@ -30,14 +31,18 @@
     }
 
     $effect(()=>{if (region) {
-        const el = region.element
-        const parts = new Set(el.getAttribute('part').split(' '))
+        const parts = new Set(element.getAttribute('part').split(' '))
         if (isSelected) {
             parts.add('region-selected')
         } else {
             parts.delete('region-selected')
         }
-        el.setAttribute('part', [...parts].join(' '))
+        element.setAttribute('part', [...parts].join(' '))
+    }})
+
+    $effect(()=>{if (region) {
+        const dodge = Math.ceil(overlap/2)*(overlap%2===0?-1:1)
+        element.style.top = `${30+5*dodge}%`
     }})
 
     onMount(()=>{
@@ -47,7 +52,6 @@
             content,
         })
         element = region.element
-        element.style.top = '30%'
         element.style.height = '40%'
         element.style.backgroundColor = 'rgb(255,215,0)'
         element.style.opacity = '75%'
@@ -56,7 +60,6 @@
         region.on('click', handleClick)
 
         return () => {
-            region.unAll()
             region.remove()
         }
     })
@@ -65,5 +68,6 @@
 <style>
 :global(::part(region-selected)) {
     background-image: repeating-linear-gradient( 45deg, transparent, transparent 10px, #fff 10px, #ffffff 15px );
+    z-index: 1000;
 }
 </style>
