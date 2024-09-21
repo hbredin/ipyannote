@@ -70,9 +70,10 @@ export function createRegionsValue(model, name) {
     updateRegion: (region, index) => {
       let newIndex = 0
       curVal.update((regions) => {
-        regions.splice(index, 1)
+        const [removed] = regions.splice(index, 1)
         newIndex = sortedIndex(regions, region)
-        regions.splice(newIndex, 0, region)
+        regions.splice(newIndex, 0, removed)
+        Object.assign(removed, region)
         model.set(name, [])
         model.set(name, regions)
         model.save_changes()
