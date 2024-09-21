@@ -1,12 +1,13 @@
 <script>
     import {onMount, getContext} from 'svelte'
     let {
-        start=$bindable(), 
-        end=$bindable(), 
-        content=$bindable(), 
+        start, 
+        end, 
+        content, 
         isSelected=true,
         select,
         focus,
+        update
     } = $props()
 
     let region = $state()
@@ -14,10 +15,8 @@
 
     const regions = getContext('regions')
 
-    function update() {
-        start = region.start
-        end = region.end
-        select()
+    function handleUpdate() {
+        update({start: region.start, end: region.end, content})
     }
 
     function handleClick(event) {
@@ -53,7 +52,7 @@
         element.style.backgroundColor = 'rgb(255,215,0)'
         element.style.opacity = '75%'
 
-        region.on('update-end', update)
+        region.on('update-end', handleUpdate)
         region.on('click', handleClick)
 
         return () => {

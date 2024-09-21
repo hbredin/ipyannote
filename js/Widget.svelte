@@ -1,6 +1,6 @@
 <script>
     import {onMount} from 'svelte'
-    import { createValue } from './stores';
+    import { createValue, createRegionsValue } from './stores';
     import Wavesurfer from './Wavesurfer.svelte';
     import Region from './Region.svelte'
 
@@ -9,7 +9,7 @@
     // create stores from traits
     let b64_audio = createValue(model, 'b64_audio')
     let zoom = createValue(model, 'zoom')
-    let regions = createValue(model, 'regions')
+    let regions = createRegionsValue(model, 'regions')
     let selectedIndex = createValue(model, 'selected_index', -1)
     
     let playing = $state(false)
@@ -27,8 +27,7 @@
             ws.skip(event.altKey?0.1:1)
         } else if (event.code === 'Delete') {
             if ($selectedIndex !== -1) {
-                regions.update(r=>[...r.filter((_, i)=>i!==$selectedIndex).sort((a,b)=>a.start - b.start)])
-                $selectedIndex = Math.min($selectedIndex, $regions.length-1)
+                $selectedIndex = regions.deleteRegion($selectedIndex)
             }
         }
     }
@@ -47,7 +46,7 @@
         }
         // can't directly remove a newborn region for some reason
         setTimeout(()=>region.remove(), 10)
-        regions.update(r=>[...r, createdRegion])
+        $selectedIndex = regions.addRegion(createdRegion)
     }
 
 
@@ -64,12 +63,13 @@
     >
         {#each $regions as region, i (region)}
              <Region 
-                bind:start={region.start} 
-                bind:end={region.end} 
-                bind:content={region.content}
+                start={region.start} 
+                end={region.end} 
+                content={region.content}
                 isSelected={$selectedIndex===i}
                 select={()=>{$selectedIndex=i}}
                 focus={()=>wrapper.focus()}
+                update={(region)=>$selectedIndex=regions.updateRegion(region, i)}
                 />
         {/each}
     </Wavesurfer>
