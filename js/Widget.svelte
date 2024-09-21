@@ -29,6 +29,16 @@
             if ($selectedIndex !== -1) {
                 $selectedIndex = regions.deleteRegion($selectedIndex)
             }
+        } else if (event.code === 'Tab') {
+            event.preventDefault()
+            if ($selectedIndex === -1) return
+            if (event.shiftKey) {
+                // select previous region
+                $selectedIndex = Math.max(0, $selectedIndex - 1)
+            } else {
+                // select next region
+                $selectedIndex = Math.min($regions.length - 1, $selectedIndex + 1)
+            }
         }
     }
 
