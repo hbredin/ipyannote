@@ -8,7 +8,9 @@
         select,
         focus,
         update,
-        overlap
+        overlap,
+        play,
+        loop
     } = $props()
 
     let region = $state()
@@ -23,7 +25,11 @@
     function handleClick(event) {
         event.stopPropagation()
         if (isSelected) {
-            // play on click?
+            if (event.shiftKey) {
+                loop()
+            } else {
+                play()
+            }
         } else {
             select()
         }

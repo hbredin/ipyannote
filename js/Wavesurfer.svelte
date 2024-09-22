@@ -45,6 +45,35 @@
         wavesurfer.skip(time)
     }
 
+    let playedRegion, loopedRegion
+    export function playRegion(region) {
+        wavesurfer.setTime(region.start)
+        playedRegion = region
+        wavesurfer.play()
+    }
+
+    export function loopRegion(region) {
+        wavesurfer.setTime(region.start)
+        loopedRegion = region
+        wavesurfer.play()
+    }
+
+    function handleTime(t) {
+        if (playedRegion) {
+            if ((t < playedRegion.start)||(t>playedRegion.end)) {
+                if (playing) wavesurfer.pause()
+                playedRegion = undefined
+            }
+        } else if (loopedRegion) {
+            if ((t < loopedRegion.start)||(t>loopedRegion.end+0.3)) {
+                if (playing) wavesurfer.pause()
+                loopedRegion = undefined
+            } else if ((t > loopedRegion.end)&&playing) {
+                wavesurfer.setTime(loopedRegion.start)
+            }
+        }
+    }
+
     onMount(()=>{
         wavesurfer = WaveSurfer.create({
             container: container,
@@ -66,8 +95,8 @@
         wavesurfer.on('play', ()=>{playing=true})
         wavesurfer.on('pause', ()=>{playing=false})
         wavesurfer.on('ready', ()=>ready=true)
-        wavesurfer.on('dragstart', (X)=>{console.log('dragstart', X)})
         wavesurfer.on('click', onclick)
+        wavesurfer.on('timeupdate', handleTime)
 
         regions.enableDragSelection({
             id: 'drag'

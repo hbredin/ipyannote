@@ -1,5 +1,4 @@
 <script>
-    import {onMount} from 'svelte'
     import { createValue, createRegionsValue } from './stores';
     import Wavesurfer from './Wavesurfer.svelte';
     import Region from './Region.svelte'
@@ -108,6 +107,8 @@
                 focus={()=>wrapper.focus()}
                 update={(region)=>$selectedIndex=regions.updateRegion(region, i)}
                 overlap={overlap[i]}
+                play={()=>ws.playRegion(region)}
+                loop={()=>ws.loopRegion(region)}
                 />
         {/each}
     </Wavesurfer>
