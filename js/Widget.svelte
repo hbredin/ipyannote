@@ -25,12 +25,13 @@
     selectedLabel.set($labels[0])
 
     let labelToColor = $derived(new Map(
-        $labels.map((label, index)=>[label, $colors[index%$labels.length]])
+        $labels.map((label, index)=>[label, $colors[index%$colors.length]])
     ))
     let playing = $state(false)
 
     let wrapper // Wrapper div
-    let ws // Wavesurfer component
+    let ws = $state()// Wavesurfer component
+    let labelsComponent = $state() 
 
     function hotkeys(event) {
         event.preventDefault()
@@ -60,6 +61,8 @@
             if (num < $labels.length) {
                 $selectedLabel = $labels[num];
                 relabelSelectedRegion($selectedLabel)
+            } else if (num===$labels.length) {
+                labelsComponent.addLabel()
             }
         }
     }
@@ -113,6 +116,11 @@
         regions.relabelRegion(label, $selectedIndex)
     }
 
+    function createLabel(label) {
+        labels.update(l=>[...l, label])
+        $selectedLabel = label
+    }
+
 </script>
 
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -143,8 +151,11 @@
     <Labels 
         labels={$labels}
         colors={$colors}
+        bind:this={labelsComponent}
         bind:selectedLabel={$selectedLabel}
         {relabelSelectedRegion}
+        {createLabel}
+        focus={()=>wrapper.focus()}
         />
 </div>
 
