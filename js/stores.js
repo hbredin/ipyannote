@@ -11,7 +11,7 @@ export function createValue(model, name_, value_) {
     set: (v) => {
       curVal.set(v);
       if (Array.isArray(v)) {
-        model.set(name, [], {silent: true})
+        model.set(name, [])
       }
       model.set(name, v);
       model.save_changes();
@@ -21,7 +21,7 @@ export function createValue(model, name_, value_) {
       curVal.update((v) => {
         let out = func(v);
         if (Array.isArray(out)) {
-          model.set(name, [], {silent: true})
+          model.set(name, [])
         }
         model.set(name, out);
         model.save_changes();
@@ -109,6 +109,15 @@ export function createRegionsValue(model, name) {
       model.set(name, [])
       model.save_changes()
       return val
+    },
+    relabelRegion(label, index) {
+      curVal.update(regions => {
+        Object.assign(regions[index], {content: label})
+        model.set(name, [])
+        model.set(name, regions)
+        model.save_changes()
+        return regions
+      })
     }
   };
 }
