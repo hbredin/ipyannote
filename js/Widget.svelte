@@ -2,6 +2,7 @@
     import { createValue, createRegionsValue } from './stores';
     import Wavesurfer from './Wavesurfer.svelte';
     import Region from './Region.svelte'
+    import Labels from './Labels.svelte';
 
     let { model } = $props()
 
@@ -10,6 +11,19 @@
     let zoom = createValue(model, 'zoom')
     let regions = createRegionsValue(model, 'regions')
     let selectedIndex = createValue(model, 'selected_index', -1)
+    let colors = createValue(model, 'colors')
+    let labels = createValue(model, 'labels', [])
+    let selectedLabel = createValue(model, 'selected_label', '')
+
+    if ($labels.length === 0) {
+        const regionLabels = [...new Set($regions.map(r=>r.content))]
+        if (regionLabels.length === 0) {
+            regionLabels.push('Label 1')
+        }
+        labels.set(regionLabels)
+    }
+    selectedLabel.set($labels[0])
+
     
     let playing = $state(false)
 
@@ -51,7 +65,7 @@
         const createdRegion = {
             start: region.start,
             end: region.end,
-            content: '?', // todo assign active label
+            content: $selectedLabel,
         }
         // can't directly remove a newborn region for some reason
         setTimeout(()=>region.remove(), 10)
@@ -112,6 +126,10 @@
                 />
         {/each}
     </Wavesurfer>
+    <Labels 
+        labels={$labels}
+        bind:selectedLabel={$selectedLabel}
+        />
 </div>
 
 <div class="controls">

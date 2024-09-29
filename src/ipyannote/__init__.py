@@ -40,6 +40,18 @@ class Widget(anywidget.AnyWidget):
     zoom = traitlets.Integer(20).tag(sync=True) # pixels per second
     regions = traitlets.List().tag(sync=True)
     selected_index = traitlets.Integer(-1).tag(sync=True)
+    labels = traitlets.List([]).tag(sync=True)
+    selected_label = traitlets.Unicode().tag(sync=True)
+    colors = traitlets.List([
+        "#ffd700",
+        "#00ffff",
+        "#ff00ff",
+        "#00ff00",
+        "#9932cc",
+        "#00bfff",
+        "#ff7f50",
+        "#66cdaa",
+    ]).tag(sync=True)
 
     def __init__(self, audio: Optional[str] = None, **kwargs):
         super().__init__(**kwargs)
