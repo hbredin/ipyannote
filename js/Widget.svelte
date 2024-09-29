@@ -24,7 +24,9 @@
     }
     selectedLabel.set($labels[0])
 
-    
+    let labelToColor = $derived(new Map(
+        $labels.map((label, index)=>[label, $colors[index%$labels.length]])
+    ))
     let playing = $state(false)
 
     let wrapper // Wrapper div
@@ -116,6 +118,7 @@
                 start={region.start} 
                 end={region.end} 
                 content={region.content}
+                color={labelToColor.get(region.content)||"#aaa"}
                 isSelected={$selectedIndex===i}
                 select={()=>{$selectedIndex=i}}
                 focus={()=>wrapper.focus()}
@@ -128,6 +131,7 @@
     </Wavesurfer>
     <Labels 
         labels={$labels}
+        colors={$colors}
         bind:selectedLabel={$selectedLabel}
         />
 </div>

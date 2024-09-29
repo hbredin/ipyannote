@@ -4,6 +4,7 @@
         start, 
         end, 
         content, 
+        color,
         isSelected=true,
         select,
         focus,
@@ -51,6 +52,10 @@
         element.style.top = `${30+5*dodge}%`
     }})
 
+    $effect(()=>{if (region) {
+        element.style.backgroundColor = color
+    }})
+
     onMount(()=>{
         region = regions.addRegion({
             start,
@@ -59,7 +64,6 @@
         })
         element = region.element
         element.style.height = '40%'
-        element.style.backgroundColor = 'rgb(255,215,0)'
         element.style.opacity = '75%'
 
         region.on('update-end', handleUpdate)

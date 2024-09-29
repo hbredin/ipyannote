@@ -1,7 +1,8 @@
 <script>
     let {
         labels,
-        selectedLabel=$bindable()
+        selectedLabel=$bindable(),
+        colors
     } = $props()
 </script>
 
@@ -11,6 +12,7 @@
          <button 
             class="label" 
             class:selected={label===selectedLabel}
+            style="background-color:{colors[i]};"
             onclick={()=>selectedLabel=label}
             >
             <span class="label" contenteditable bind:innerHTML={labels[i]}></span>
