@@ -101,6 +101,10 @@
         return tracks
     })
 
+    function relabelSelectedRegion(label) {
+        if ($selectedIndex===-1) return
+        regions.relabelRegion(label, $selectedIndex)
+    }
 
 </script>
 
@@ -133,6 +137,7 @@
         labels={$labels}
         colors={$colors}
         bind:selectedLabel={$selectedLabel}
+        {relabelSelectedRegion}
         />
 </div>
 

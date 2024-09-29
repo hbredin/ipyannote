@@ -56,6 +56,10 @@
         element.style.backgroundColor = color
     }})
 
+    $effect(()=>{if (region) {
+        region.setContent(content)
+    }})
+
     onMount(()=>{
         region = regions.addRegion({
             start,

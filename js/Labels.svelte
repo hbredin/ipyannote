@@ -2,8 +2,14 @@
     let {
         labels,
         selectedLabel=$bindable(),
-        colors
+        colors,
+        relabelSelectedRegion
     } = $props()
+
+    function handleClick(label) {
+        selectedLabel = label
+        relabelSelectedRegion(label)
+    }
 </script>
 
 <div class="labels">
@@ -13,7 +19,7 @@
             class="label" 
             class:selected={label===selectedLabel}
             style="background-color:{colors[i]};"
-            onclick={()=>selectedLabel=label}
+            onclick={()=>handleClick(label)}
             >
             <span class="label" contenteditable bind:innerHTML={labels[i]}></span>
             {#if i < 10}
