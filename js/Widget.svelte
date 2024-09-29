@@ -33,8 +33,8 @@
     let ws // Wavesurfer component
 
     function hotkeys(event) {
+        event.preventDefault()
         if (event.code === 'Space') {
-            event.preventDefault()
             ws.playPause()
         } else if (event.code === 'ArrowLeft') {
             ws.skip(event.altKey?-0.1:-1)
@@ -45,7 +45,6 @@
                 $selectedIndex = regions.deleteRegion($selectedIndex)
             }
         } else if (event.code === 'Tab') {
-            event.preventDefault()
             if ($selectedIndex === -1) return
             if (event.shiftKey) {
                 // select previous region
@@ -53,6 +52,14 @@
             } else {
                 // select next region
                 $selectedIndex = Math.min($regions.length - 1, $selectedIndex + 1)
+            }
+        } else if (event.code.startsWith("Digit") || /Numpad\d/.test(event.code)) {
+            let num = Number(event.code.slice(-1));
+            if (num === 0) {num = 10}
+            num -= 1;
+            if (num < $labels.length) {
+                $selectedLabel = $labels[num];
+                relabelSelectedRegion($selectedLabel)
             }
         }
     }
