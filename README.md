@@ -8,12 +8,11 @@ pip install ipyannote
 
 ## Development installation
 
-Clone the repo and checkout the `svelte` branch
+Clone the repo
 
 ```sh
-git clone https://github.com/gereleth/ipyannote
+git clone https://github.com/hbredin/ipyannote
 cd ipyannote
-git checkout svelte
 ```
 
 Create a virtual environment and and install ipyannote in *editable* mode with the
@@ -31,6 +30,8 @@ You then need to install the JavaScript dependencies and run the development ser
 npm install
 npm run dev
 ```
+
+Change the `DEV` variable to `True` in `src/ipyannote/__init__.py` so that the widget gets its frontend code from the development server.
 
 Start Jupyter Lab with hot module reloading enabled:
 
