@@ -18,13 +18,41 @@ except importlib.metadata.PackageNotFoundError:
     __version__ = "unknown"
 
 
+_DEV = True  # switch to False for production
+
+if _DEV:
+    # from `npx vite`
+    ESM = "http://localhost:5173/js/widget.js?anywidget"
+    CSS = ""
+else:
+    # from `npx vite build`
+    bundled_assets_dir = pathlib.Path(__file__).parent / "static"
+    ESM = (bundled_assets_dir / "widget.mjs").read_text()
+    CSS = (bundled_assets_dir / "style.css").read_text()
+
+
 class Widget(anywidget.AnyWidget):
 
-    _esm = pathlib.Path(__file__).parent / "static" / "widget.js"
-    _css = pathlib.Path(__file__).parent / "static" / "widget.css"
+    _esm = ESM
+    _css = CSS
 
     b64_audio = traitlets.Unicode().tag(sync=True)
+    zoom = traitlets.Integer(20).tag(sync=True) # pixels per second
     regions = traitlets.List().tag(sync=True)
+    selected_index = traitlets.Integer(-1).tag(sync=True)
+    labels = traitlets.List([]).tag(sync=True)
+    selected_label = traitlets.Unicode().tag(sync=True)
+    colors = traitlets.List([
+        '#a1c9f4',
+        '#ffb482',
+        '#8de5a1',
+        '#ff9f9b',
+        '#d0bbff',
+        '#debb9b',
+        '#fab0e4',
+        '#ffe700',
+        '#b9f2f0'
+    ]).tag(sync=True)
 
     def __init__(self, audio: Optional[str] = None, **kwargs):
         super().__init__(**kwargs)
