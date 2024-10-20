@@ -157,18 +157,17 @@
         {createLabel}
         focus={()=>wrapper.focus()}
         />
-</div>
-
-<div class="controls">
-    <button onclick={ws.playPause} title="Press Space to play/pause">
-        {#if playing}
-                Pause
-        {:else}
-                Play
-        {/if}
-    </button>
-    <input bind:value={$zoom} type='range' min='1' max='200'>
-    <button onclick={regions.clear}>Clear regions</button>
+    <div class="controls">
+        <button onclick={ws.playPause} title="Press Space to play/pause">
+            {#if playing}
+                    Pause
+            {:else}
+                    Play
+            {/if}
+        </button>
+        <input bind:value={$zoom} type='range' min='1' max='200'>
+        <button onclick={regions.clear}>Clear regions</button>
+    </div>
 </div>
 
 
@@ -176,7 +175,7 @@
     .wrapper {
         margin: 1px;
     }
-    .wrapper:focus {
+    .wrapper:focus-within {
         outline: 1px solid #4F4A85;
     }
     .controls {
