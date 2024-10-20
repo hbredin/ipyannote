@@ -43,14 +43,15 @@ class Widget(anywidget.AnyWidget):
     labels = traitlets.List([]).tag(sync=True)
     selected_label = traitlets.Unicode().tag(sync=True)
     colors = traitlets.List([
-        "#ffd700",
-        "#00ffff",
-        "#ff00ff",
-        "#00ff00",
-        "#9932cc",
-        "#00bfff",
-        "#ff7f50",
-        "#66cdaa",
+        '#a1c9f4',
+        '#ffb482',
+        '#8de5a1',
+        '#ff9f9b',
+        '#d0bbff',
+        '#debb9b',
+        '#fab0e4',
+        '#ffe700',
+        '#b9f2f0'
     ]).tag(sync=True)
 
     def __init__(self, audio: Optional[str] = None, **kwargs):
