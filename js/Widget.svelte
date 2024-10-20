@@ -165,8 +165,7 @@
                     Play
             {/if}
         </button>
-        <input bind:value={$zoom} type='range' min='1' max='200'>
-        <button onclick={regions.clear}>Clear regions</button>
+        <label>Zoom <input bind:value={$zoom} type='range' min='1' max='200'> </label>
     </div>
 </div>
 
@@ -180,5 +179,17 @@
     }
     .controls {
         margin-top: 2em;
+        display: flex;
+        flex-direction: row;
+        column-gap: 1em;
+    }
+    button {
+        min-width: 10em;
+        min-height: 2em;
+        position: relative;
+    }
+    label {
+        display: flex;
+        align-items: center;
     }
 </style>
