@@ -126,7 +126,7 @@
         }
     })
 
-    // React to $playing changes fron Controls widget
+    // React to $playing changes from Controls widget
     $effect(()=>{
         if ($playing) {
             ws.play()
