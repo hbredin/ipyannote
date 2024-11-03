@@ -6,7 +6,7 @@
 
     let { 
         b64_audio, 
-        playing=$bindable(),
+        playing,
         zoom,
         onclick,
         children,
@@ -37,8 +37,12 @@
         wavesurfer.loadBlob(blob);
     }
 
-    export function playPause() {
-        wavesurfer.playPause()
+    export function play() {
+        wavesurfer.play()
+    }
+
+    export function pause() {
+        wavesurfer.pause()
     }
 
     export function skip(time) {
@@ -49,26 +53,30 @@
     export function playRegion(region) {
         wavesurfer.setTime(region.start)
         playedRegion = region
-        wavesurfer.play()
+        $playing = true
     }
 
     export function loopRegion(region) {
         wavesurfer.setTime(region.start)
         loopedRegion = region
-        wavesurfer.play()
+        $playing = true
     }
 
     function handleTime(t) {
         if (playedRegion) {
             if ((t < playedRegion.start)||(t>playedRegion.end)) {
-                if (playing) wavesurfer.pause()
+                if ($playing) {
+                    $playing=false
+                }
                 playedRegion = undefined
             }
         } else if (loopedRegion) {
             if ((t < loopedRegion.start)||(t>loopedRegion.end+0.3)) {
-                if (playing) wavesurfer.pause()
+                if ($playing) {
+                    $playing = false
+                }
                 loopedRegion = undefined
-            } else if ((t > loopedRegion.end)&&playing) {
+            } else if ((t > loopedRegion.end)&&$playing) {
                 wavesurfer.setTime(loopedRegion.start)
             }
         }
@@ -92,8 +100,8 @@
                 }),
             ]
         })
-        wavesurfer.on('play', ()=>{playing=true})
-        wavesurfer.on('pause', ()=>{playing=false})
+        // wavesurfer.on('play', ()=>{playing=true})
+        // wavesurfer.on('pause', ()=>{playing=false})
         wavesurfer.on('ready', ()=>ready=true)
         wavesurfer.on('click', onclick)
         wavesurfer.on('timeupdate', handleTime)

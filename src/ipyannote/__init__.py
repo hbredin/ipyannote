@@ -59,18 +59,24 @@ class Controls(anywidget.AnyWidget):
     _esm = ESM_CONTROLS
     _css = CSS
 
+    zoom = traitlets.Integer(20).tag(sync=True) # pixels per second
+    playing = traitlets.Bool(False).tag(sync=True) # are we playing or paused
+
 class Waveform(anywidget.AnyWidget):
 
     _esm = ESM_WAVEFORM
     _css = CSS
 
     b64_audio = traitlets.Unicode().tag(sync=True)
-    zoom = traitlets.Integer(20).tag(sync=True) # pixels per second
     regions = traitlets.List().tag(sync=True)
     selected_index = traitlets.Integer(-1).tag(sync=True)
+    # shared with Labels widget
     labels = traitlets.List([]).tag(sync=True)
     selected_label = traitlets.Unicode().tag(sync=True)
     colors = traitlets.List(list(COLORS)).tag(sync=True)
+    # shared with Controls widget
+    zoom = traitlets.Integer(20).tag(sync=True) # pixels per second
+    playing = traitlets.Bool(False).tag(sync=True) # are we playing or paused
 
     def __init__(self, audio: Optional[str] = None, **kwargs):
         super().__init__(**kwargs)

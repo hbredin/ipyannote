@@ -8,13 +8,17 @@
 
     // create stores from traits
     let b64_audio = createValue(model, 'b64_audio')
-    let zoom = createValue(model, 'zoom')
     let regions = createRegionsValue(model, 'regions')
     let selectedIndex = createValue(model, 'selected_index', -1)
+
     // traits shared with Labels widget
     let colors = createValue(model, 'colors')
     let labels = createValue(model, 'labels', [])
     let selectedLabel = createValue(model, 'selected_label', '')
+
+    // traits shared with Controls widget
+    let zoom = createValue(model, 'zoom')
+    let playing = createValue(model, 'playing')
 
     if ($labels.length === 0) {
         const regionLabels = [...new Set($regions.map(r=>r.content))]
@@ -28,7 +32,6 @@
     let labelToColor = $derived(new Map(
         $labels.map((label, index)=>[label, $colors[index%$colors.length]])
     ))
-    let playing = $state(false)
 
     let wrapper // Wrapper div
     let ws = $state()// Wavesurfer component
@@ -36,7 +39,7 @@
     function hotkeys(event) {
         event.preventDefault()
         if (event.code === 'Space') {
-            ws.playPause()
+            $playing = !$playing
         } else if (event.code === 'ArrowLeft') {
             ws.skip(event.altKey?-0.1:-1)
         } else if (event.code === 'ArrowRight') {
@@ -123,6 +126,14 @@
         }
     })
 
+    // React to $playing changes fron Controls widget
+    $effect(()=>{
+        if ($playing) {
+            ws.play()
+        } else {
+            ws.pause()
+        }
+    })
 
 </script>
 
@@ -131,7 +142,7 @@
     <Wavesurfer 
         {b64_audio} 
         bind:this={ws} 
-        bind:playing {zoom}
+        {playing} {zoom}
         onclick={()=>{wrapper.focus(); $selectedIndex=-1}}
         {addRegion}
     >
@@ -151,16 +162,6 @@
                 />
         {/each}
     </Wavesurfer>
-    <div class="controls">
-        <button onclick={ws.playPause} title="Press Space to play/pause">
-            {#if playing}
-                    Pause
-            {:else}
-                    Play
-            {/if}
-        </button>
-        <label>Zoom <input bind:value={$zoom} type='range' min='1' max='200'> </label>
-    </div>
 </div>
 
 
@@ -170,20 +171,5 @@
     }
     .wrapper:focus-within {
         outline: 1px solid #4F4A85;
-    }
-    .controls {
-        margin-top: 2em;
-        display: flex;
-        flex-direction: row;
-        column-gap: 1em;
-    }
-    button {
-        min-width: 10em;
-        min-height: 2em;
-        position: relative;
-    }
-    label {
-        display: flex;
-        align-items: center;
     }
 </style>
