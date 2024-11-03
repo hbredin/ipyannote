@@ -1,9 +1,9 @@
 import "./widget.css";
-import Widget from "./Widget.svelte";
+import Waveform from "./Waveform.svelte";
 import { mount, unmount } from 'svelte';
 
 function render({ model, el }) {
-  const widget = mount(Widget, { target: el, props: {model} });
+  const widget = mount(Waveform, { target: el, props: {model} });
   return () => unmount(widget);;
 }
 
