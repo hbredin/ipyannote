@@ -1,22 +1,28 @@
 <script>
     import { tick } from 'svelte';
-    let {
-        labels,
-        selectedLabel=$bindable(),
-        colors,
-        relabelSelectedRegion,
-        createLabel,
-        focus,
-    } = $props()
+    import { createValue } from './stores';
+    let { model } = $props()
+
+    // create stores from traits
+    let colors = createValue(model, 'colors')
+    let labels = createValue(model, 'labels', [])
+    let selectedLabel = createValue(model, 'selected_label', '')
 
     let addingLabel = $state(false)
     let newLabel = $state('')
     let labelInput = $state()
     
     function handleClick(label) {
-        selectedLabel = label
-        relabelSelectedRegion(label)
+        $selectedLabel = label
     }
+
+    function handleMessage(msg, buffers) {
+        if (msg == 'create_label') {
+            addLabel()
+        }
+    }
+
+    model.on("msg:custom", handleMessage)
 
     export async function addLabel() {
         addingLabel = true
@@ -33,8 +39,9 @@
 
     function finishAddingLabel() {
         addingLabel = false
-        if ((newLabel !== '')&&(!labels.includes(newLabel))) {
-            createLabel(newLabel)
+        if ((newLabel !== '')&&(!$labels.includes(newLabel))) {
+            labels.update(value => [...value, newLabel])
+            $selectedLabel = newLabel
         }
         newLabel = ''
         focus()
@@ -42,12 +49,12 @@
 </script>
 
 <div class="labels">
-    {#each labels as label, i}
+    {#each $labels as label, i}
         {@const key = (i<9) ? i+1:0}
          <button 
             class="label" 
-            class:selected={label===selectedLabel}
-            style="background-color:{colors[i%colors.length]};"
+            class:selected={label===$selectedLabel}
+            style="background-color:{$colors[i%$colors.length]};"
             onclick={()=>handleClick(label)}
             >
             <span class="label">{label}</span>
@@ -69,8 +76,8 @@
             class="add-label"
             onclick={addLabel}>
             Add label
-            {#if labels.length < 10}
-                <span class="key">{labels.length===9 ? 0:labels.length+1}</span>
+            {#if $labels.length < 10}
+                <span class="key">{$labels.length===9 ? 0:$labels.length+1}</span>
             {/if}
         </button>
     {/if}

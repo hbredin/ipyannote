@@ -7,7 +7,7 @@ export default defineConfig({
   build: {
     outDir: "src/ipyannote/static",
     lib: {
-      entry: ["js/widget.js"],
+      entry: ["js/waveform.js", 'js/labels.js', 'js/controls.js'],
       formats: ["es"],
     },
   },

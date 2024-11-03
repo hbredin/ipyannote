@@ -1,8 +1,8 @@
 <script>
+    import {untrack} from 'svelte'
     import { createValue, createRegionsValue } from './stores';
     import Wavesurfer from './Wavesurfer.svelte';
     import Region from './Region.svelte'
-    import Labels from './Labels.svelte';
 
     let { model } = $props()
 
@@ -11,6 +11,7 @@
     let zoom = createValue(model, 'zoom')
     let regions = createRegionsValue(model, 'regions')
     let selectedIndex = createValue(model, 'selected_index', -1)
+    // traits shared with Labels widget
     let colors = createValue(model, 'colors')
     let labels = createValue(model, 'labels', [])
     let selectedLabel = createValue(model, 'selected_label', '')
@@ -31,7 +32,6 @@
 
     let wrapper // Wrapper div
     let ws = $state()// Wavesurfer component
-    let labelsComponent = $state() 
 
     function hotkeys(event) {
         event.preventDefault()
@@ -60,9 +60,11 @@
             num -= 1;
             if (num < $labels.length) {
                 $selectedLabel = $labels[num];
-                relabelSelectedRegion($selectedLabel)
+                if ($selectedIndex !== -1) {
+                    regions.relabelRegion($selectedLabel, $selectedIndex)
+                }
             } else if (num===$labels.length) {
-                labelsComponent.addLabel()
+                model.send('create_label')
             }
         }
     }
@@ -110,16 +112,17 @@
         }
         return tracks
     })
+        
+    // Relabel selected region when selected label changes
+    // untrack prevents this from running when selected region changes
+    $effect(() => {
+        $selectedLabel;
+        const index = untrack(()=>$selectedIndex)
+        if (index!==-1) {
+            regions.relabelRegion($selectedLabel, index)
+        }
+    })
 
-    function relabelSelectedRegion(label) {
-        if ($selectedIndex===-1) return
-        regions.relabelRegion(label, $selectedIndex)
-    }
-
-    function createLabel(label) {
-        labels.update(l=>[...l, label])
-        $selectedLabel = label
-    }
 
 </script>
 
@@ -148,15 +151,6 @@
                 />
         {/each}
     </Wavesurfer>
-    <Labels 
-        labels={$labels}
-        colors={$colors}
-        bind:this={labelsComponent}
-        bind:selectedLabel={$selectedLabel}
-        {relabelSelectedRegion}
-        {createLabel}
-        focus={()=>wrapper.focus()}
-        />
     <div class="controls">
         <button onclick={ws.playPause} title="Press Space to play/pause">
             {#if playing}
