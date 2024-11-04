@@ -112,6 +112,10 @@ export function createRegionsValue(model, name) {
     },
     relabelRegion(label, index) {
       curVal.update(regions => {
+        if (regions[index].content === label) {
+          // already have this label
+          return regions
+        }
         Object.assign(regions[index], {content: label})
         model.set(name, [])
         model.set(name, regions)

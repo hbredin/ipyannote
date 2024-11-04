@@ -46,16 +46,19 @@
             ws.skip(event.altKey?0.1:1)
         } else if (event.code === 'Delete') {
             if ($selectedIndex !== -1) {
-                $selectedIndex = regions.deleteRegion($selectedIndex)
+                const index = regions.deleteRegion($selectedIndex)
+                selectRegion(index)
             }
         } else if (event.code === 'Tab') {
             if ($selectedIndex === -1) return
             if (event.shiftKey) {
                 // select previous region
-                $selectedIndex = Math.max(0, $selectedIndex - 1)
+                const index = Math.max(0, $selectedIndex - 1)
+                selectRegion(index)
             } else {
                 // select next region
-                $selectedIndex = Math.min($regions.length - 1, $selectedIndex + 1)
+                const index = Math.min($regions.length - 1, $selectedIndex + 1)
+                selectRegion(index)
             }
         } else if (event.code.startsWith("Digit") || /Numpad\d/.test(event.code)) {
             let num = Number(event.code.slice(-1));
@@ -87,6 +90,20 @@
         // can't directly remove a newborn region for some reason
         setTimeout(()=>region.remove(), 10)
         $selectedIndex = regions.addRegion(createdRegion)
+    }
+
+    function selectRegion(index) {
+        $selectedIndex=index;
+        if (index === -1) return
+        const label = $regions[index].content
+        if ($labels.includes(label)) {
+            $selectedLabel=label
+        }
+    }
+
+    function updateRegion(index, region) {
+        const i = regions.updateRegion(region, index)
+        selectRegion(i)
     }
 
     // make regions dodge each other when they overlap
@@ -153,9 +170,9 @@
                 content={region.content}
                 color={labelToColor.get(region.content)||"#aaa"}
                 isSelected={$selectedIndex===i}
-                select={()=>{$selectedIndex=i}}
+                select={()=>selectRegion(i)}
                 focus={()=>wrapper.focus()}
-                update={(region)=>$selectedIndex=regions.updateRegion(region, i)}
+                update={(region)=>updateRegion(i, region)}
                 overlap={overlap[i]}
                 play={()=>ws.playRegion(region)}
                 loop={()=>ws.loopRegion(region)}

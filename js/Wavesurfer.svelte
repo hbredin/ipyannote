@@ -100,8 +100,6 @@
                 }),
             ]
         })
-        // wavesurfer.on('play', ()=>{playing=true})
-        // wavesurfer.on('pause', ()=>{playing=false})
         wavesurfer.on('ready', ()=>ready=true)
         wavesurfer.on('click', onclick)
         wavesurfer.on('timeupdate', handleTime)
