@@ -3,6 +3,7 @@
     import Wavesurfer from './Wavesurfer.svelte';
     import Region from './Region.svelte'
     import Labels from './Labels.svelte';
+    import Trim from "./icons/Trim.svelte";
 
     let { model } = $props()
 
@@ -64,6 +65,9 @@
             } else if (num===$labels.length) {
                 labelsComponent.addLabel()
             }
+        } else if (event.code === "Enter"){
+            if($selectedIndex === -1) return
+            splitRegion($regions[$selectedIndex], ws.getCurrentTime())
         }
     }
 
@@ -82,6 +86,29 @@
         // can't directly remove a newborn region for some reason
         setTimeout(()=>region.remove(), 10)
         $selectedIndex = regions.addRegion(createdRegion)
+    }
+
+    // split selected region at given time
+    function splitRegion(region, time ) {
+        if(time < region.start || time > region.end)
+            time = (region.start + region.end) / 2. 
+        
+        regions.deleteRegion($selectedIndex)
+        
+        const leftRegion = {
+            start: region.start,
+            end: time,
+            content: region.content,
+        }
+        regions.addRegion(leftRegion)
+
+        const rightRegion = {
+            start: time,
+            end: region.end,
+            content: region.content,
+        }
+        regions.addRegion(rightRegion)
+
     }
 
     // make regions dodge each other when they overlap
@@ -166,6 +193,7 @@
             {/if}
         </button>
         <label>Zoom <input bind:value={$zoom} type='range' min='1' max='200'> </label>
+        <button class="action" onclick={() => splitRegion($regions[$selectedIndex], ws.getCurrentTime())} title="Split selected region"> <Trim/> </button>
     </div>
 </div>
 
@@ -183,6 +211,11 @@
         flex-direction: row;
         column-gap: 1em;
     }
+    .action {
+        width: 10em;
+        height: 2em;
+    }
+
     button {
         min-width: 10em;
         min-height: 2em;

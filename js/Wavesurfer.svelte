@@ -58,6 +58,10 @@
         wavesurfer.play()
     }
 
+    export function getCurrentTime() {
+        return wavesurfer.getCurrentTime()  
+    }
+
     function handleTime(t) {
         if (playedRegion) {
             if ((t < playedRegion.start)||(t>playedRegion.end)) {
