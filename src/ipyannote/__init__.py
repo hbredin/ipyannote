@@ -2,6 +2,7 @@ import importlib.metadata
 import pathlib
 from typing import Optional
 
+import ipywidgets
 import anywidget
 import traitlets
 
@@ -105,4 +106,109 @@ class Waveform(anywidget.AnyWidget):
         self.b64_audio = self.to_base64(waveform, sample_rate)
 
     audio = property(None, set_audio, del_audio)
+
+
+class IpyannoteWidget(ipywidgets.VBox):
+
+    def __init__(self, audio: Optional[str] = None, **kwargs_):
+        self._waveform = Waveform(audio, **kwargs_)
+        self._labels = Labels(**kwargs_)
+        self._controls = Controls(**kwargs_)
+        super().__init__([self._waveform, self._labels, self._controls])
+        # link widgets so they can interact
+        # links to labels
+        ipywidgets.link((self._labels, 'labels'), (self._waveform, 'labels'))
+        ipywidgets.link((self._labels, 'colors'), (self._waveform, 'colors'))
+        ipywidgets.link((self._labels, 'selected_label'), (self._waveform, 'selected_label'))
+        def handle_create_label(_, content, buffers):
+            if content == 'create_label':
+                self._labels.send('create_label')
+        self._waveform.on_msg(handle_create_label)
+
+        # links to controls
+        ipywidgets.link((self._controls, 'zoom'), (self._waveform, 'zoom'))
+        ipywidgets.link((self._controls, 'playing'), (self._waveform, 'playing'))
+
+
+    # properties from waveform traits - super tedious to write this for every trait
+    @property
+    def audio(self):
+        return self._waveform.audio
+
+    @audio.setter
+    def _set_audio(self, value):
+        self._waveform.audio = value
+
+    @property
+    def b64_audio(self):
+        return self._waveform.b64_audio
+
+    @b64_audio.setter
+    def _set_b64_audio(self, value):
+        self._waveform.b64_audio = value
+
+    @property
+    def regions(self):
+        return self._waveform.regions
+
+    @regions.setter
+    def _set_regions(self, value):
+        self._waveform.regions = value
+
+    @property
+    def selected_index(self):
+        return self._waveform.selected_index
+
+    @selected_index.setter
+    def _set_selected_index(self, value):
+        self._waveform.selected_index = value
+
+    @property
+    def labels(self):
+        return self._waveform.labels
+
+    @labels.setter
+    def _set_labels(self, value):
+        self._waveform.labels = value
+
+    @property
+    def selected_label(self):
+        return self._waveform.selected_label
+
+    @selected_label.setter
+    def _set_selected_label(self, value):
+        self._waveform.selected_label = value
+
+    @property
+    def colors(self):
+        return self._waveform.colors
+
+    @colors.setter
+    def _set_colors(self, value):
+        self._waveform.colors = value
+
+    @property
+    def zoom(self):
+        return self._waveform.zoom
+
+    @zoom.setter
+    def _set_zoom(self, value):
+        self._waveform.zoom = value
+
+    @property
+    def playing(self):
+        return self._waveform.playing
+
+    @playing.setter
+    def _set_playing(self, value):
+        self._waveform.playing = value
+
+
+
+    def observe(self, handler, names=traitlets.All, type='change'):
+        if hasattr(self, '_waveform'):
+            # check if the widget is initialized
+            self._waveform.observe(handler, names=names, type=type)
+        else:
+            super().observe(handler, names=names, type=type)
 
